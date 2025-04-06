@@ -1,8 +1,8 @@
-package com.example.hellowtalk.core.service;
+package com.example.hellowtalk.core.user.service;
 
-import com.example.hellowtalk.core.dto.request.UserCreateRequest;
-import com.example.hellowtalk.core.entity.User;
-import com.example.hellowtalk.core.repository.UserRepository;
+import com.example.hellowtalk.core.user.dto.request.UserCreateRequest;
+import com.example.hellowtalk.core.user.entity.User;
+import com.example.hellowtalk.core.user.repository.UserRepository;
 import com.example.hellowtalk.global.exception.CustomException;
 import com.example.hellowtalk.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
-import static com.example.hellowtalk.core.entity.LoginStatus.OFFLINE;
+import static com.example.hellowtalk.core.user.entity.LoginStatus.OFFLINE;
 
 @Service
 @Transactional(readOnly = true)

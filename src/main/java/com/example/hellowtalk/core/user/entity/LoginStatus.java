@@ -1,4 +1,4 @@
-package com.example.hellowtalk.core.entity;
+package com.example.hellowtalk.core.user.entity;
 
 public enum LoginStatus {
 

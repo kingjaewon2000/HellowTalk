@@ -1,8 +1,8 @@
-package com.example.hellowtalk.core.controller;
+package com.example.hellowtalk.core.user.controller;
 
-import com.example.hellowtalk.core.dto.request.LoginRequest;
-import com.example.hellowtalk.core.dto.response.LoginResponse;
-import com.example.hellowtalk.core.service.AuthService;
+import com.example.hellowtalk.core.user.dto.request.LoginRequest;
+import com.example.hellowtalk.core.user.dto.response.LoginResponse;
+import com.example.hellowtalk.core.user.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

@@ -1,6 +1,6 @@
-package com.example.hellowtalk.core.repository;
+package com.example.hellowtalk.core.user.repository;
 
-import com.example.hellowtalk.core.entity.User;
+import com.example.hellowtalk.core.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserRepository extends JpaRepository<User, Long> {

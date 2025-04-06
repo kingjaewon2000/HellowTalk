@@ -1,7 +1,7 @@
-package com.example.hellowtalk.core.controller;
+package com.example.hellowtalk.core.user.controller;
 
-import com.example.hellowtalk.core.dto.request.UserCreateRequest;
-import com.example.hellowtalk.core.service.UserService;
+import com.example.hellowtalk.core.user.dto.request.UserCreateRequest;
+import com.example.hellowtalk.core.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

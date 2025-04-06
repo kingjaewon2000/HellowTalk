@@ -9,8 +9,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import java.io.IOException;
-
 @Component
 public class AuthInterceptor implements HandlerInterceptor {
 

@@ -1,4 +1,4 @@
-package com.example.hellowtalk.config.exception;
+package com.example.hellowtalk.global.exception;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

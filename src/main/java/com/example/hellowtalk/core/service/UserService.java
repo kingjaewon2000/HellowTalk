@@ -1,10 +1,10 @@
 package com.example.hellowtalk.core.service;
 
-import com.example.hellowtalk.config.exception.CustomException;
-import com.example.hellowtalk.config.exception.ErrorCode;
 import com.example.hellowtalk.core.dto.request.UserCreateRequest;
 import com.example.hellowtalk.core.entity.User;
 import com.example.hellowtalk.core.repository.UserRepository;
+import com.example.hellowtalk.global.exception.CustomException;
+import com.example.hellowtalk.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

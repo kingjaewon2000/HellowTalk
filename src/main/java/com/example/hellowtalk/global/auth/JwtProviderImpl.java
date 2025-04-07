@@ -17,12 +17,12 @@ import java.util.Date;
 @Component
 public class JwtProviderImpl implements JwtProvider {
 
+    private static final String CLAIM_USER_ID = "userId";
+    private static final String CLAIM_USERNAME = "username";
     @Value("${app.jwt.secret-key}")
     private String secretKey;
-
     @Value("${app.jwt.expiration-ms}")
     private long expirationMs;
-
     private SecretKey key;
 
     @PostConstruct
@@ -30,19 +30,26 @@ public class JwtProviderImpl implements JwtProvider {
         this.key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String createAccessToken(String subject) {
+    @Override
+    public String createAccessToken(Long userId, String username) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + expirationMs);
 
+        Claims claims = Jwts.claims()
+                .add(CLAIM_USER_ID, userId)
+                .add(CLAIM_USERNAME, username)
+                .build();
+
         return Jwts.builder()
-                .subject(subject)
+                .claims(claims)
                 .issuedAt(now)
                 .expiration(expiryDate)
                 .signWith(key)
                 .compact();
     }
 
-    public String getSubjectFromToken(String token) {
+    @Override
+    public AuthUser getAuthUserFromToken(String token) {
         try {
             Claims claims = Jwts.parser()
                     .verifyWith(key)
@@ -50,7 +57,10 @@ public class JwtProviderImpl implements JwtProvider {
                     .parseSignedClaims(token)
                     .getPayload();
 
-            return claims.getSubject();
+            Long userId = claims.get(CLAIM_USER_ID, Long.class);
+            String username = claims.get(CLAIM_USERNAME, String.class);
+
+            return new AuthUser(userId, username);
         } catch (ExpiredJwtException e) {
             throw new CustomException(ErrorCode.EXPIRED_TOKEN);
         } catch (RuntimeException e) {

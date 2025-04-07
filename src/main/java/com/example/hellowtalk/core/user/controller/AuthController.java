@@ -3,6 +3,7 @@ package com.example.hellowtalk.core.user.controller;
 import com.example.hellowtalk.core.user.dto.request.LoginRequest;
 import com.example.hellowtalk.core.user.dto.response.LoginResponse;
 import com.example.hellowtalk.core.user.service.AuthService;
+import com.example.hellowtalk.global.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,10 +19,12 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<ApiResponse<LoginResponse>> login(@RequestBody LoginRequest request) {
         String accessToken = authService.login(request);
 
-        return ResponseEntity.ok().body(new LoginResponse(accessToken));
+        return ResponseEntity
+                .ok()
+                .body(ApiResponse.success(new LoginResponse(accessToken)));
     }
 
 }

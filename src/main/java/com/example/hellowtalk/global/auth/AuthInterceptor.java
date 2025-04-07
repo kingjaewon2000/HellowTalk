@@ -13,7 +13,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 public class AuthInterceptor implements HandlerInterceptor {
 
     private static final String BEARER_PREFIX = "Bearer ";
-    private static final String AUTH_ATTRIBUTE = "user";
+    private static final String AUTHENTICATED_USER_ATTRIBUTE = "USER";
 
     private final JwtProvider jwtProvider;
 
@@ -29,9 +29,9 @@ public class AuthInterceptor implements HandlerInterceptor {
             throw new CustomException(ErrorCode.INVALID_TOKEN);
         }
 
-        JwtAuthentication authentication = authenticate(token);
+        AuthUser authUser = authenticate(token);
 
-        request.setAttribute(AUTH_ATTRIBUTE, authentication);
+        request.setAttribute(AUTHENTICATED_USER_ATTRIBUTE, authUser);
 
         return true;
     }
@@ -46,13 +46,8 @@ public class AuthInterceptor implements HandlerInterceptor {
         return null;
     }
 
-    private JwtAuthentication authenticate(String token) {
-        String username = jwtProvider.getSubjectFromToken(token);
-
-        return new JwtAuthentication(
-                username,
-                token
-        );
+    private AuthUser authenticate(String token) {
+        return jwtProvider.getAuthUserFromToken(token);
     }
 
 }

@@ -2,8 +2,8 @@ package com.example.hellowtalk.global.auth;
 
 public interface JwtProvider {
 
-    String createAccessToken(String subject);
+    String createAccessToken(Long userId, String username);
 
-    String getSubjectFromToken(String token);
+    AuthUser getAuthUserFromToken(String token);
 
 }

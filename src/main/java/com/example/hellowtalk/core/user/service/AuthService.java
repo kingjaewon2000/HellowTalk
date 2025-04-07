@@ -30,11 +30,11 @@ public class AuthService {
             throw new CustomException(ErrorCode.INVALID_CREDENTIALS);
         }
 
-        return jwtProvider.createAccessToken(request.username());
+        return jwtProvider.createAccessToken(user.getUserId(), user.getUsername());
     }
 
-    private boolean verifyPassword(String password1, String password2) {
-        return passwordEncoder.matches(password1, password2);
+    private boolean verifyPassword(String rawPassword, String encodedPassword) {
+        return passwordEncoder.matches(rawPassword, encodedPassword);
     }
 
 }

@@ -1,6 +1,7 @@
 package com.example.hellowtalk.core.user.service;
 
 import com.example.hellowtalk.core.user.dto.request.LoginRequest;
+import com.example.hellowtalk.core.user.dto.response.LoginResponse;
 import com.example.hellowtalk.core.user.entity.User;
 import com.example.hellowtalk.core.user.repository.UserRepository;
 import com.example.hellowtalk.global.auth.JwtProvider;
@@ -9,16 +10,18 @@ import com.example.hellowtalk.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class AuthService {
 
     private final UserRepository userRepository;
     private final JwtProvider jwtProvider;
 
-    public String login(LoginRequest request) {
+    public LoginResponse login(LoginRequest request) {
         User user = userRepository.findByUsername(request.username());
 
         if (user == null) {
@@ -29,7 +32,9 @@ public class AuthService {
             throw new CustomException(ErrorCode.INVALID_CREDENTIALS);
         }
 
-        return jwtProvider.createAccessToken(user.getUserId(), user.getUsername());
+        String accessToken = jwtProvider.createAccessToken(user.getUserId(), user.getUsername());
+
+        return new LoginResponse(user.getUserId(), user.getUsername(), accessToken);
     }
 
     private boolean verifyPassword(String rawPassword, String encodedPassword) {

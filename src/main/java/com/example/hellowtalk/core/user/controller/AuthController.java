@@ -20,11 +20,9 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<LoginResponse>> login(@RequestBody LoginRequest request) {
-        String accessToken = authService.login(request);
-
         return ResponseEntity
                 .ok()
-                .body(ApiResponse.success(new LoginResponse(accessToken)));
+                .body(ApiResponse.success(authService.login(request)));
     }
 
 }

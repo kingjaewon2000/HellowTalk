@@ -1,6 +1,7 @@
 package com.example.hellowtalk.core.friend.service;
 
 import com.example.hellowtalk.core.friend.dto.request.FriendCreateRequest;
+import com.example.hellowtalk.core.friend.dto.response.FriendCreateResponse;
 import com.example.hellowtalk.core.friend.dto.response.FriendInfoResponse;
 import com.example.hellowtalk.core.friend.entity.Friend;
 import com.example.hellowtalk.core.friend.repository.FriendRepository;
@@ -35,16 +36,24 @@ public class FriendService {
     }
 
     @Transactional
-    public void createFriend(FriendCreateRequest request) {
-        User user = userRepository.findByUserId(request.userId()).orElseThrow();
+    public FriendCreateResponse createFriend(Long userId, FriendCreateRequest request) {
+        User user = userRepository.findByUserId(userId).orElseThrow();
         User friendUser = userRepository.findByUserId(request.friendId()).orElseThrow();
 
-        Friend friend = Friend.builder()
+        Friend buildFriend = Friend.builder()
                 .requesterUser(user)
                 .requestedUser(friendUser)
                 .status(ACCEPTED)
                 .build();
 
-        friendRepository.save(friend);
+        Friend friend = friendRepository.save(buildFriend);
+        Long requesterUserId = friend.getRequesterUser().getUserId();
+        Long requestedUserId = friend.getRequestedUser().getUserId();
+
+        return new FriendCreateResponse(friend.getFriendId(),
+                requesterUserId,
+                requestedUserId,
+                friend.getStatus().toString());
     }
+
 }

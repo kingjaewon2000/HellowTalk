@@ -1,6 +1,7 @@
 package com.example.hellowtalk.core.friend.controller;
 
 import com.example.hellowtalk.core.friend.dto.request.FriendCreateRequest;
+import com.example.hellowtalk.core.friend.dto.response.FriendCreateResponse;
 import com.example.hellowtalk.core.friend.dto.response.FriendInfoResponse;
 import com.example.hellowtalk.core.friend.service.FriendService;
 import com.example.hellowtalk.global.annotation.LoginUser;
@@ -27,14 +28,14 @@ public class FriendController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<Void>> createFriend(
+    public ResponseEntity<ApiResponse<FriendCreateResponse>> createFriend(
             @LoginUser AuthUser authUser,
             @RequestBody FriendCreateRequest request
     ) {
-        friendService.createFriend(request);
+        FriendCreateResponse response = friendService.createFriend(authUser.userId(), request);
 
         return ResponseEntity
                 .ok()
-                .body(ApiResponse.success());
+                .body(ApiResponse.success(response));
     }
 }

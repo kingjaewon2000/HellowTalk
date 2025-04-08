@@ -1,6 +1,7 @@
 package com.example.hellowtalk.core.user.service;
 
 import com.example.hellowtalk.core.user.dto.request.UserCreateRequest;
+import com.example.hellowtalk.core.user.dto.response.UserCreateResponse;
 import com.example.hellowtalk.core.user.entity.User;
 import com.example.hellowtalk.core.user.repository.UserRepository;
 import com.example.hellowtalk.global.exception.CustomException;
@@ -22,7 +23,7 @@ public class UserService {
     private final UserRepository userRepository;
 
     @Transactional
-    public void createUser(UserCreateRequest request) {
+    public UserCreateResponse createUser(UserCreateRequest request) {
         if (userRepository.existsByUsername(request.username())) {
             throw new CustomException(ErrorCode.DUPLICATED_USERNAME);
         }
@@ -35,7 +36,9 @@ public class UserService {
                 .lastLoginAt(LocalDateTime.now())
                 .build();
 
-        userRepository.save(user);
+        User createUser = userRepository.save(user);
+
+        return new UserCreateResponse(createUser.getUserId());
     }
 
 }

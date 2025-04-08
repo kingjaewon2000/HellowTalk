@@ -1,6 +1,7 @@
 package com.example.hellowtalk.core.user.controller;
 
 import com.example.hellowtalk.core.user.dto.request.UserCreateRequest;
+import com.example.hellowtalk.core.user.dto.response.UserCreateResponse;
 import com.example.hellowtalk.core.user.service.UserService;
 import com.example.hellowtalk.global.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -18,12 +19,12 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<ApiResponse<Void>> createUser(@RequestBody UserCreateRequest request) {
-        userService.createUser(request);
+    public ResponseEntity<ApiResponse<UserCreateResponse>> createUser(@RequestBody UserCreateRequest request) {
+        UserCreateResponse response = userService.createUser(request);
 
         return ResponseEntity
                 .ok()
-                .build();
+                .body(ApiResponse.success(response));
     }
 
 }

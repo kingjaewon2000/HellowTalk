@@ -18,4 +18,5 @@ public class Dummy {
                 .lastLoginAt(LocalDateTime.now())
                 .build();
     }
+
 }

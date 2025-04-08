@@ -7,6 +7,7 @@ import com.example.hellowtalk.core.user.repository.UserRepository;
 import com.example.hellowtalk.dummy.Dummy;
 import com.example.hellowtalk.global.auth.JwtProvider;
 import com.example.hellowtalk.global.exception.CustomException;
+import com.example.hellowtalk.global.exception.ErrorCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,7 +16,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -58,14 +60,16 @@ class AuthServiceTest {
     }
 
     @Test
-    @DisplayName("로그인 시 존재하지 않 아이디(username)을 입력하면 예외를 던진다")
+    @DisplayName("로그인 시 존재하지 않는 아이디(username)을 입력하면 예외를 던진다")
     void usernameNotFound() {
         // given
         when(userRepository.findByUsername(request.username())).thenReturn(null);
 
         // when
         assertThatThrownBy(() -> authService.login(request))
-                .isInstanceOf(CustomException.class);
+                .isInstanceOf(CustomException.class)
+                .extracting("errorCode")
+                .isEqualTo(ErrorCode.INVALID_CREDENTIALS);
 
         // then
     }
@@ -80,7 +84,9 @@ class AuthServiceTest {
 
         // when
         assertThatThrownBy(() -> authService.login(failRequest))
-                .isInstanceOf(CustomException.class);
+                .isInstanceOf(CustomException.class)
+                .extracting("errorCode")
+                .isEqualTo(ErrorCode.INVALID_CREDENTIALS);
 
         // then
 

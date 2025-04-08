@@ -1,6 +1,7 @@
 package com.example.hellowtalk.core.user.service;
 
 import com.example.hellowtalk.core.user.dto.request.LoginRequest;
+import com.example.hellowtalk.core.user.dto.response.LoginResponse;
 import com.example.hellowtalk.core.user.entity.User;
 import com.example.hellowtalk.core.user.repository.UserRepository;
 import com.example.hellowtalk.dummy.Dummy;
@@ -42,16 +43,18 @@ class AuthServiceTest {
     @DisplayName("로그인 성공 시 액세스 토큰을 반환한다")
     void login() {
         // given
-        User user = Dummy.mockUser();
+        User mockUser = Dummy.mockUser();
 
-        when(userRepository.findByUsername(request.username())).thenReturn(user);
-        when(jwtProvider.createAccessToken(user.getUserId(), user.getUsername())).thenReturn("token");
+        when(userRepository.findByUsername(request.username())).thenReturn(mockUser);
+        when(jwtProvider.createAccessToken(mockUser.getUserId(), mockUser.getUsername())).thenReturn("token");
 
         // when
-        String token = authService.login(request);
+        LoginResponse response = authService.login(request);
 
         // then
-        assertThat(token).isNotBlank();
+        assertThat(response).isNotNull();
+        assertThat(response.userId()).isEqualTo(mockUser.getUserId());
+        assertThat(response.username()).isEqualTo(mockUser.getUsername());
     }
 
     @Test

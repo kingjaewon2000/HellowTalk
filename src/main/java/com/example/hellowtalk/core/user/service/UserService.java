@@ -20,6 +20,7 @@ import static com.example.hellowtalk.core.user.entity.LoginStatus.OFFLINE;
 public class UserService {
 
     private final UserRepository userRepository;
+
     @Transactional
     public void createUser(UserCreateRequest request) {
         if (userRepository.existsByUsername(request.username())) {
@@ -36,4 +37,5 @@ public class UserService {
 
         userRepository.save(user);
     }
+
 }

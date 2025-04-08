@@ -6,7 +6,7 @@ import com.example.hellowtalk.core.user.repository.UserRepository;
 import com.example.hellowtalk.global.exception.CustomException;
 import com.example.hellowtalk.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,8 +20,6 @@ import static com.example.hellowtalk.core.user.entity.LoginStatus.OFFLINE;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-
     @Transactional
     public void createUser(UserCreateRequest request) {
         if (userRepository.existsByUsername(request.username())) {
@@ -30,7 +28,7 @@ public class UserService {
 
         User user = User.builder()
                 .username(request.username())
-                .password(passwordEncoder.encode(request.password()))
+                .password(BCrypt.hashpw(request.password(), BCrypt.gensalt()))
                 .name(request.name())
                 .status(OFFLINE)
                 .lastLoginAt(LocalDateTime.now())

@@ -39,7 +39,7 @@ dependencies {
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")
 
     // bcrypt
-    implementation("org.springframework.security:spring-security-crypto")
+    implementation("org.mindrot:jbcrypt:0.4")
 }
 
 tasks.withType<Test> {

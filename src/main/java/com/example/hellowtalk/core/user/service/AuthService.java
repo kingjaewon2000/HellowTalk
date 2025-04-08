@@ -7,7 +7,7 @@ import com.example.hellowtalk.global.auth.JwtProvider;
 import com.example.hellowtalk.global.exception.CustomException;
 import com.example.hellowtalk.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 
@@ -17,7 +17,6 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final JwtProvider jwtProvider;
-    private final PasswordEncoder passwordEncoder;
 
     public String login(LoginRequest request) {
         User user = userRepository.findByUsername(request.username());
@@ -34,7 +33,7 @@ public class AuthService {
     }
 
     private boolean verifyPassword(String rawPassword, String encodedPassword) {
-        return passwordEncoder.matches(rawPassword, encodedPassword);
+        return BCrypt.checkpw(rawPassword, encodedPassword);
     }
 
 }

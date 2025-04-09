@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
+import static com.example.hellowtalk.core.user.dto.response.UserCreateResponse.toResponse;
 import static com.example.hellowtalk.core.user.entity.LoginStatus.OFFLINE;
 
 @Service
@@ -49,7 +50,7 @@ public class UserService {
 
         User createUser = userRepository.save(user);
 
-        return new UserCreateResponse(createUser.getUserId());
+        return toResponse(createUser);
     }
 
 }

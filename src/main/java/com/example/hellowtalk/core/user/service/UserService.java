@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
 
 import static com.example.hellowtalk.core.user.entity.LoginStatus.OFFLINE;
 
@@ -21,6 +23,15 @@ import static com.example.hellowtalk.core.user.entity.LoginStatus.OFFLINE;
 public class UserService {
 
     private final UserRepository userRepository;
+
+    public User findById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
+    }
+
+    public List<User> findAllById(Set<Long> userIds) {
+        return userRepository.findAllById(userIds);
+    }
 
     @Transactional
     public UserCreateResponse createUser(UserCreateRequest request) {

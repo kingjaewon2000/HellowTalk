@@ -8,7 +8,7 @@ import com.example.hellowtalk.core.friend.entity.RelationStatus;
 import com.example.hellowtalk.core.friend.repository.FriendRepository;
 import com.example.hellowtalk.core.user.entity.LoginStatus;
 import com.example.hellowtalk.core.user.entity.User;
-import com.example.hellowtalk.core.user.repository.UserRepository;
+import com.example.hellowtalk.core.user.service.UserService;
 import com.example.hellowtalk.dummy.Dummy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,7 +22,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -32,7 +31,7 @@ import static org.mockito.Mockito.when;
 class FriendServiceTest {
 
     @Mock
-    private UserRepository userRepository;
+    private UserService userService;
 
     @Mock
     private FriendRepository friendRepository;
@@ -118,9 +117,9 @@ class FriendServiceTest {
                 .status(RelationStatus.ACCEPTED)
                 .build();
 
-        FriendCreateRequest request = new FriendCreateRequest(friend1.getUserId());
-        when(userRepository.findByUserId(user.getUserId())).thenReturn(Optional.of(user));
-        when(userRepository.findByUserId(friend1.getUserId())).thenReturn(Optional.of(friend1));
+        FriendCreateRequest request = new FriendCreateRequest(friend1.getUsername());
+        when(userService.findById(user.getUserId())).thenReturn(user);
+        when(userService.findByUsername(friend1.getUsername())).thenReturn(friend1);
         when(friendRepository.save(any(Friend.class))).thenReturn(mockFriend);
 
         // when

@@ -12,7 +12,7 @@ public record FriendCreateResponse(
         return new FriendCreateResponse(
                 friend.getFriendId(),
                 friend.getRequesterUser().getUserId(),
-                friend.getRequesterUser().getUserId(),
+                friend.getRequestedUser().getUserId(),
                 friend.getStatus().name()
         );
     }

@@ -3,8 +3,6 @@ package com.example.hellowtalk.core.user.service;
 import com.example.hellowtalk.core.user.dto.request.LoginRequest;
 import com.example.hellowtalk.core.user.dto.response.LoginResponse;
 import com.example.hellowtalk.core.user.entity.User;
-import com.example.hellowtalk.core.user.repository.UserRepository;
-import com.example.hellowtalk.dummy.Dummy;
 import com.example.hellowtalk.global.auth.JwtProvider;
 import com.example.hellowtalk.global.exception.CustomException;
 import com.example.hellowtalk.global.exception.ErrorCode;
@@ -16,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static com.example.hellowtalk.dummy.Dummy.mockUser;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
@@ -24,7 +23,7 @@ import static org.mockito.Mockito.when;
 class AuthServiceTest {
 
     @Mock
-    private UserRepository userRepository;
+    private UserService userService;
 
     @Mock
     private JwtProvider jwtProvider;
@@ -45,9 +44,9 @@ class AuthServiceTest {
     @DisplayName("로그인 성공 시 액세스 토큰을 반환한다")
     void login() {
         // given
-        User mockUser = Dummy.mockUser();
+        User mockUser = mockUser();
 
-        when(userRepository.findByUsername(request.username())).thenReturn(mockUser);
+        when(userService.findByUsername(request.username())).thenReturn(mockUser);
         when(jwtProvider.createAccessToken(mockUser.getUserId(), mockUser.getUsername())).thenReturn("token");
 
         // when
@@ -63,13 +62,13 @@ class AuthServiceTest {
     @DisplayName("로그인 시 존재하지 않는 아이디(username)을 입력하면 예외를 던진다")
     void usernameNotFound() {
         // given
-        when(userRepository.findByUsername(request.username())).thenReturn(null);
+        when(userService.findByUsername(request.username())).thenThrow(new CustomException(ErrorCode.NOT_FOUND_USER));
 
         // when
         assertThatThrownBy(() -> authService.login(request))
                 .isInstanceOf(CustomException.class)
                 .extracting("errorCode")
-                .isEqualTo(ErrorCode.INVALID_CREDENTIALS);
+                .isEqualTo(ErrorCode.NOT_FOUND_USER);
 
         // then
     }
@@ -80,7 +79,7 @@ class AuthServiceTest {
         // given
         LoginRequest failRequest = new LoginRequest(request.username(), "fail");
 
-        when(userRepository.findByUsername(request.username())).thenReturn(Dummy.mockUser());
+        when(userService.findByUsername(request.username())).thenReturn(mockUser());
 
         // when
         assertThatThrownBy(() -> authService.login(failRequest))

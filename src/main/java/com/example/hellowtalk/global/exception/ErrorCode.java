@@ -18,8 +18,14 @@ public enum ErrorCode {
     DUPLICATED_USERNAME(HttpStatus.BAD_REQUEST, "유저 아이디가 중복되었습니다."),
     NOT_FOUND_USER(HttpStatus.BAD_REQUEST, "존재하지 않는 회원입니다."),
 
+    // 친구 관련 예외 코드
+    NOT_ALLOW_SELF_ADD_FRIEND(HttpStatus.BAD_REQUEST, "자기 자신을 친구 추가하는 것은 허용되지 않습니다."),
+    NOT_ALLOW_ALREADY_ADDED_FRIEND(HttpStatus.BAD_REQUEST, "이미 친구추가가 된 사용자는 다시 추가할 수 없습니다."),
+
     // 채팅방 관련 예외 코드
-    INVALID_PARTICIPANT_IDS(HttpStatus.BAD_REQUEST, "초대받은 유저 목록 ID가 유효하지 않습니다.");
+    NOT_ALLOW_SELF_INVITATION(HttpStatus.BAD_REQUEST, "자기 자신을 채팅방에 초대하는 것은 허용되지 않습니다."),
+    INVALID_PARTICIPANT_IDS(HttpStatus.BAD_REQUEST, "초대받은 유저 목록 ID가 유효하지 않습니다."),
+    CHANNEL_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "이미 동일한 사용자와의 채팅방이 존재합니다.");
 
 
     private final HttpStatus status;

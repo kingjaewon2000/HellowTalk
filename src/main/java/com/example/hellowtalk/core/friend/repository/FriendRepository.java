@@ -10,4 +10,6 @@ public interface FriendRepository extends JpaRepository<Friend, Long> {
 
     @EntityGraph(attributePaths = { "requesterUser", "requestedUser" } )
     List<Friend> findAllByRequesterUser_UserId(Long userId);
+
+    boolean existsByRequesterUser_UserIdAndRequestedUser_UserId(Long requesterUserId, Long requestedUserId);
 }

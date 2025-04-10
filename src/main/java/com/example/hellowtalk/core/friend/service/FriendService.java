@@ -27,11 +27,7 @@ public class FriendService {
         List<Friend> friends = friendRepository.findAllByRequesterUser_UserId(userId);
 
         return friends.stream()
-                .map(f -> new FriendInfoResponse(
-                        f.getRequestedUser().getUserId(),
-                        f.getRequestedUser().getName(),
-                        f.getRequestedUser().getStatus().toString()
-                ))
+                .map(FriendInfoResponse::toResponse)
                 .toList();
     }
 
@@ -47,13 +43,8 @@ public class FriendService {
                 .build();
 
         Friend friend = friendRepository.save(buildFriend);
-        Long requesterUserId = friend.getRequesterUser().getUserId();
-        Long requestedUserId = friend.getRequestedUser().getUserId();
 
-        return new FriendCreateResponse(friend.getFriendId(),
-                requesterUserId,
-                requestedUserId,
-                friend.getStatus().toString());
+        return FriendCreateResponse.toResponse(friend);
     }
 
 }

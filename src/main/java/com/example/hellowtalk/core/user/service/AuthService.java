@@ -12,6 +12,8 @@ import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.example.hellowtalk.core.user.dto.response.LoginResponse.toResponse;
+
 
 @Service
 @RequiredArgsConstructor
@@ -34,7 +36,7 @@ public class AuthService {
 
         String accessToken = jwtProvider.createAccessToken(user.getUserId(), user.getUsername());
 
-        return new LoginResponse(user.getUserId(), user.getUsername(), accessToken);
+        return toResponse(user, accessToken);
     }
 
     private boolean verifyPassword(String rawPassword, String encodedPassword) {

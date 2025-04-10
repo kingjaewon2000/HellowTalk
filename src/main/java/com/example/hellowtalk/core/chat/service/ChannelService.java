@@ -44,8 +44,13 @@ public class ChannelService {
     @Transactional
     public ChannelCreateResponse createDirectChannel(Long loginUserId, DirectChannelCreateRequest request) {
         if (matchUserId(loginUserId, request.userId())) {
-            throw new CustomException(ErrorCode.INVALID_PARTICIPANT_IDS);
+            throw new CustomException(ErrorCode.SELF_INVITATION_NOT_ALLOW);
         }
+
+        channelUserRepository.findOneToOneChannelByUsers(loginUserId, request.userId(), ONE_TO_ONE)
+                .ifPresent(channel -> {
+                    throw new CustomException(ErrorCode.CHANNEL_ALREADY_EXISTS);
+                });
 
         User loginUser = userService.findById(loginUserId);
         User otherUser = userService.findById(request.userId());

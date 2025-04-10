@@ -19,7 +19,9 @@ public enum ErrorCode {
     NOT_FOUND_USER(HttpStatus.BAD_REQUEST, "존재하지 않는 회원입니다."),
 
     // 채팅방 관련 예외 코드
-    INVALID_PARTICIPANT_IDS(HttpStatus.BAD_REQUEST, "초대받은 유저 목록 ID가 유효하지 않습니다.");
+    SELF_INVITATION_NOT_ALLOW(HttpStatus.BAD_REQUEST, "자기 자신을 채팅방에 초대하는 것은 허용되지 않습니다."),
+    INVALID_PARTICIPANT_IDS(HttpStatus.BAD_REQUEST, "초대받은 유저 목록 ID가 유효하지 않습니다."),
+    CHANNEL_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "이미 동일한 사용자와의 채팅방이 존재합니다.");
 
 
     private final HttpStatus status;

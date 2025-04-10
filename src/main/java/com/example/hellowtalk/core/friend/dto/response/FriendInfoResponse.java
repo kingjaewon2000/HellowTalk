@@ -9,7 +9,7 @@ public record FriendInfoResponse(
         String status) {
 
     public static FriendInfoResponse toResponse(Friend friend) {
-        User user = friend.getRequesterUser();
+        User user = friend.getRequestedUser();
 
         return new FriendInfoResponse(
                 user.getUserId(),

@@ -8,6 +8,7 @@ public enum ErrorCode {
 
     // 인증 관련 예외 코드
     INVALID_CREDENTIALS(HttpStatus.UNAUTHORIZED, "인증에 실패했습니다."),
+    UNAUTHORIZED_ACCESS(HttpStatus.UNAUTHORIZED, "인증이 필요한 작업입니다."),
 
     // 토큰 관련 예외 코드
     EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "토큰이 만료되었습니다."),

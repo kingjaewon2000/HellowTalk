@@ -23,6 +23,8 @@ repositories {
     mavenCentral()
 }
 
+val queryDslVersion = 6.11
+
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-web")
@@ -43,8 +45,22 @@ dependencies {
 
     // websocket
     implementation("org.springframework.boot:spring-boot-starter-websocket")
+
+    // querydsl 6.11
+    implementation("io.github.openfeign.querydsl:querydsl-core:${queryDslVersion}")
+    implementation("io.github.openfeign.querydsl:querydsl-jpa:${queryDslVersion}")
+    annotationProcessor("io.github.openfeign.querydsl:querydsl-apt:${queryDslVersion}")
+    annotationProcessor("io.github.openfeign.querydsl:querydsl-apt:${queryDslVersion}:jpa")
 }
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+sourceSets {
+    getByName("main") {
+        java {
+            srcDir("${layout.buildDirectory}/generated/sources/annotationProcessor/java/main")
+        }
+    }
 }

@@ -6,7 +6,6 @@ import com.example.hellowtalk.core.friend.dto.response.FriendInfoResponse;
 import com.example.hellowtalk.core.friend.entity.Friend;
 import com.example.hellowtalk.core.friend.repository.FriendRepository;
 import com.example.hellowtalk.core.user.entity.User;
-import com.example.hellowtalk.core.user.repository.UserRepository;
 import com.example.hellowtalk.core.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -3,7 +3,6 @@ package com.example.hellowtalk.core.user.service;
 import com.example.hellowtalk.core.user.dto.request.LoginRequest;
 import com.example.hellowtalk.core.user.dto.response.LoginResponse;
 import com.example.hellowtalk.core.user.entity.User;
-import com.example.hellowtalk.core.user.repository.UserRepository;
 import com.example.hellowtalk.global.auth.JwtProvider;
 import com.example.hellowtalk.global.exception.CustomException;
 import com.example.hellowtalk.global.exception.ErrorCode;
@@ -20,15 +19,11 @@ import static com.example.hellowtalk.core.user.dto.response.LoginResponse.toResp
 @Transactional(readOnly = true)
 public class AuthService {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final JwtProvider jwtProvider;
 
     public LoginResponse login(LoginRequest request) {
-        User user = userRepository.findByUsername(request.username());
-
-        if (user == null) {
-            throw new CustomException(ErrorCode.INVALID_CREDENTIALS);
-        }
+        User user = userService.findByUsername(request.username());
 
         if (!verifyPassword(request.password(), user.getPassword())) {
             throw new CustomException(ErrorCode.INVALID_CREDENTIALS);

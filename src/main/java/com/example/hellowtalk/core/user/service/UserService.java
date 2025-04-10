@@ -34,6 +34,11 @@ public class UserService {
         return userRepository.findAllById(userIds);
     }
 
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
+    }
+
     @Transactional
     public UserCreateResponse createUser(UserCreateRequest request) {
         if (userRepository.existsByUsername(request.username())) {
@@ -52,5 +57,4 @@ public class UserService {
 
         return toResponse(createUser);
     }
-
 }

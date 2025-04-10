@@ -44,7 +44,7 @@ public class ChannelService {
     @Transactional
     public ChannelCreateResponse createDirectChannel(Long loginUserId, DirectChannelCreateRequest request) {
         if (matchUserId(loginUserId, request.userId())) {
-            throw new CustomException(ErrorCode.SELF_INVITATION_NOT_ALLOW);
+            throw new CustomException(ErrorCode.NOT_ALLOW_SELF_INVITATION);
         }
 
         channelUserRepository.findOneToOneChannelByUsers(loginUserId, request.userId(), ONE_TO_ONE)

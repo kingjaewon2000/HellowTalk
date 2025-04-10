@@ -29,4 +29,17 @@ public class User {
     @Enumerated(EnumType.STRING)
     private LoginStatus status;
     private LocalDateTime lastLoginAt;
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+
+        User user = (User) o;
+        return userId.equals(user.userId);
+    }
+
+    @Override
+    public int hashCode() {
+        return userId.hashCode();
+    }
 }

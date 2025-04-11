@@ -8,6 +8,7 @@ import com.example.hellowtalk.core.chat.entity.Channel;
 import com.example.hellowtalk.core.chat.entity.ChannelType;
 import com.example.hellowtalk.core.chat.entity.ChannelUser;
 import com.example.hellowtalk.core.chat.repository.ChannelRepository;
+import com.example.hellowtalk.core.chat.repository.ChannelUserCustomRepository;
 import com.example.hellowtalk.core.chat.repository.ChannelUserRepository;
 import com.example.hellowtalk.core.user.entity.User;
 import com.example.hellowtalk.core.user.service.UserService;
@@ -31,6 +32,7 @@ public class ChannelService {
 
     private final ChannelRepository channelRepository;
     private final ChannelUserRepository channelUserRepository;
+    private final ChannelUserCustomRepository channelUserCustomRepository;
     private final UserService userService;
 
     public List<ChannelInfoResponse> getChannels(Long loginUserId) {
@@ -47,10 +49,9 @@ public class ChannelService {
             throw new CustomException(ErrorCode.NOT_ALLOW_SELF_INVITATION);
         }
 
-        channelUserRepository.findOneToOneChannelByUsers(loginUserId, request.userId(), ONE_TO_ONE)
-                .ifPresent(channel -> {
-                    throw new CustomException(ErrorCode.CHANNEL_ALREADY_EXISTS);
-                });
+        if (channelUserCustomRepository.existsOneToOneChannelByUsers(loginUserId, request.userId())) {
+            throw new CustomException(ErrorCode.CHANNEL_ALREADY_EXISTS);
+        }
 
         User loginUser = userService.findById(loginUserId);
         User otherUser = userService.findById(request.userId());

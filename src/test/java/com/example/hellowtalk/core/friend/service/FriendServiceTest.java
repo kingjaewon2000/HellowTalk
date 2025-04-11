@@ -1,11 +1,10 @@
 package com.example.hellowtalk.core.friend.service;
 
-import com.example.hellowtalk.core.friend.dto.request.FriendCreateRequest;
-import com.example.hellowtalk.core.friend.dto.response.FriendCreateResponse;
+import com.example.hellowtalk.core.friend.dto.request.FriendAddRequest;
+import com.example.hellowtalk.core.friend.dto.response.FriendAddResponse;
 import com.example.hellowtalk.core.friend.dto.response.FriendInfoResponse;
-import com.example.hellowtalk.core.friend.entity.Friend;
 import com.example.hellowtalk.core.friend.entity.RelationStatus;
-import com.example.hellowtalk.core.friend.repository.FriendRepository;
+import com.example.hellowtalk.core.friend.repository.FriendshipRepository;
 import com.example.hellowtalk.core.user.entity.LoginStatus;
 import com.example.hellowtalk.core.user.entity.User;
 import com.example.hellowtalk.core.user.service.UserService;
@@ -34,7 +33,7 @@ class FriendServiceTest {
     private UserService userService;
 
     @Mock
-    private FriendRepository friendRepository;
+    private FriendshipRepository friendshipRepository;
 
     @InjectMocks
     private FriendService friendService;
@@ -81,7 +80,7 @@ class FriendServiceTest {
                 .build();
 
         List<Friend> mockFriends = List.of(friendship1, friendship2);
-        when(friendRepository.findAllByRequesterUser_UserId(user.getUserId())).thenReturn(mockFriends);
+        when(friendshipRepository.findAllByRequesterUser_UserId(user.getUserId())).thenReturn(mockFriends);
 
         // when
         List<FriendInfoResponse> responses = friendService.getFriends(user.getUserId());
@@ -96,7 +95,7 @@ class FriendServiceTest {
     void 친구_없으면_빈_목록_반환() {
         // given
         Long userId = 1L;
-        when(friendRepository.findAllByRequesterUser_UserId(userId)).thenReturn(Collections.emptyList());
+        when(friendshipRepository.findAllByRequesterUser_UserId(userId)).thenReturn(Collections.emptyList());
 
         // when
         List<FriendInfoResponse> responses = friendService.getFriends(userId);
@@ -117,17 +116,17 @@ class FriendServiceTest {
                 .status(RelationStatus.ACCEPTED)
                 .build();
 
-        FriendCreateRequest request = new FriendCreateRequest(friend1.getUsername());
+        FriendAddRequest request = new FriendAddRequest(friend1.getUsername());
         when(userService.findById(user.getUserId())).thenReturn(user);
         when(userService.findByUsername(friend1.getUsername())).thenReturn(friend1);
-        when(friendRepository.save(any(Friend.class))).thenReturn(mockFriend);
+        when(friendshipRepository.save(any(Friend.class))).thenReturn(mockFriend);
 
         // when
-        FriendCreateResponse response = friendService.createFriend(user.getUserId(), request);
+        FriendAddResponse response = friendService.addFriend(user.getUserId(), request);
 
         // then
         assertThat(response).isNotNull();
-        assertThat(response.friendId()).isEqualTo(1L);
+        assertThat(response.friendshipId()).isEqualTo(1L);
         assertThat(response.requesterId()).isEqualTo(user.getUserId());
         assertThat(response.requestedId()).isEqualTo(friend1.getUserId());
         assertThat(response.relationStatus()).isEqualTo(RelationStatus.ACCEPTED.toString());

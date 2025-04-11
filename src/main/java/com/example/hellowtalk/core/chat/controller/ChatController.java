@@ -23,7 +23,6 @@ public class ChatController {
     public void sendMessage(Principal principal,
                             @DestinationVariable Long channelId,
                             @Payload SimpleMessageRequest request) {
-
         String username = principal.getName();
 
         ChatMessageRequest message = new ChatMessageRequest(

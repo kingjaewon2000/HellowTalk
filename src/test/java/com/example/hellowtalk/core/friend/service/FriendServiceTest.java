@@ -3,7 +3,10 @@ package com.example.hellowtalk.core.friend.service;
 import com.example.hellowtalk.core.friend.dto.request.FriendAddRequest;
 import com.example.hellowtalk.core.friend.dto.response.FriendAddResponse;
 import com.example.hellowtalk.core.friend.dto.response.FriendInfoResponse;
-import com.example.hellowtalk.core.friend.entity.RelationStatus;
+import com.example.hellowtalk.core.friend.entity.Friendship;
+import com.example.hellowtalk.core.friend.entity.FriendshipLink;
+import com.example.hellowtalk.core.friend.repository.FriendshipLinkCustomRepository;
+import com.example.hellowtalk.core.friend.repository.FriendshipLinkRepository;
 import com.example.hellowtalk.core.friend.repository.FriendshipRepository;
 import com.example.hellowtalk.core.user.entity.LoginStatus;
 import com.example.hellowtalk.core.user.entity.User;
@@ -22,6 +25,8 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
+import static com.example.hellowtalk.core.friend.entity.RelationStatus.ACCEPTED;
+import static com.example.hellowtalk.core.friend.entity.RelationStatus.PENDING;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -34,6 +39,12 @@ class FriendServiceTest {
 
     @Mock
     private FriendshipRepository friendshipRepository;
+
+    @Mock
+    private FriendshipLinkRepository friendshipLinkRepository;
+
+    @Mock
+    private FriendshipLinkCustomRepository friendshipLinkCustomRepository;
 
     @InjectMocks
     private FriendService friendService;
@@ -67,20 +78,23 @@ class FriendServiceTest {
     @DisplayName("친구 목록 조회 성공 시")
     void 친구_목록_조회() {
         // given
-        Friend friendship1 = Friend.builder()
-                .friendId(1L)
-                .requesterUser(user)
-                .requestedUser(friend1)
+        Friendship friendship = Friendship.builder()
+                .friendshipId(1L)
+                .status(ACCEPTED)
                 .build();
 
-        Friend friendship2 = Friend.builder()
-                .friendId(2L)
-                .requesterUser(user)
-                .requestedUser(friend2)
+        FriendshipLink friendshipLink1 = FriendshipLink.builder()
+                .friendship(friendship)
+                .user(friend1)
                 .build();
 
-        List<Friend> mockFriends = List.of(friendship1, friendship2);
-        when(friendshipRepository.findAllByRequesterUser_UserId(user.getUserId())).thenReturn(mockFriends);
+        FriendshipLink friendshipLink2 = FriendshipLink.builder()
+                .friendship(friendship)
+                .user(friend2)
+                .build();
+
+        List<FriendshipLink> mockFriends = List.of(friendshipLink1, friendshipLink2);
+        when(friendshipLinkCustomRepository.findAllByUserId(user.getUserId())).thenReturn(mockFriends);
 
         // when
         List<FriendInfoResponse> responses = friendService.getFriends(user.getUserId());
@@ -95,7 +109,7 @@ class FriendServiceTest {
     void 친구_없으면_빈_목록_반환() {
         // given
         Long userId = 1L;
-        when(friendshipRepository.findAllByRequesterUser_UserId(userId)).thenReturn(Collections.emptyList());
+        when(friendshipLinkCustomRepository.findAllByUserId(userId)).thenReturn(Collections.emptyList());
 
         // when
         List<FriendInfoResponse> responses = friendService.getFriends(userId);
@@ -109,17 +123,30 @@ class FriendServiceTest {
     @DisplayName("친구 추가 요청 시")
     void 친구_추가() {
         // given
-        Friend mockFriend = Friend.builder()
-                .friendId(1L)
-                .requesterUser(user)
-                .requestedUser(friend1)
-                .status(RelationStatus.ACCEPTED)
+        Friendship friendship = Friendship.builder()
+                .friendshipId(1L)
+                .status(PENDING)
+                .build();
+
+        FriendshipLink friendshipLink1 = FriendshipLink.builder()
+                .friendship(friendship)
+                .user(friend1)
+                .build();
+
+        FriendshipLink friendshipLink2 = FriendshipLink.builder()
+                .friendship(friendship)
+                .user(friend2)
                 .build();
 
         FriendAddRequest request = new FriendAddRequest(friend1.getUsername());
         when(userService.findById(user.getUserId())).thenReturn(user);
         when(userService.findByUsername(friend1.getUsername())).thenReturn(friend1);
-        when(friendshipRepository.save(any(Friend.class))).thenReturn(mockFriend);
+        when(friendshipLinkCustomRepository.existsFriend(user.getUserId(), friend1.getUserId())).thenReturn(false);
+        when(friendshipRepository.save(any(Friendship.class))).thenReturn(friendship);
+        when(friendshipLinkRepository.save(any(FriendshipLink.class)))
+                .thenReturn(friendshipLink1)
+                .thenReturn(friendshipLink2);
+
 
         // when
         FriendAddResponse response = friendService.addFriend(user.getUserId(), request);
@@ -129,7 +156,7 @@ class FriendServiceTest {
         assertThat(response.friendshipId()).isEqualTo(1L);
         assertThat(response.requesterId()).isEqualTo(user.getUserId());
         assertThat(response.requestedId()).isEqualTo(friend1.getUserId());
-        assertThat(response.relationStatus()).isEqualTo(RelationStatus.ACCEPTED.toString());
+        assertThat(response.relationStatus()).isEqualTo(PENDING.toString());
     }
 
 }

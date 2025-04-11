@@ -48,7 +48,7 @@ public class FriendService {
         validFriendshipRequest(requester, requested);
 
         Friendship friendship = createFriendship(PENDING);
-        friendshipRepository.save(friendship);
+        friendship = friendshipRepository.save(friendship);
 
         FriendshipLink friendshipLink1 = createFriendshipLink(friendship, requester);
         FriendshipLink friendshipLink2 = createFriendshipLink(friendship, requested);
